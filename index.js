@@ -22,6 +22,9 @@
         display:grid;
         grid-template-columns:repeat(3,1fr);
         gap:4px;
+        position:absolute;
+        bottom:10px;
+        right:10px;
         `
         tools.forEach(tool => {
             const btn = document.createElement('button')
@@ -36,6 +39,8 @@
                 // 可以在这里添加更多的逻辑
             }
         })
+
+        document.body.appendChild(toolBox)
     }
 
     function showPWD() {

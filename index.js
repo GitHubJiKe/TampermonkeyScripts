@@ -19,8 +19,34 @@
             newDiv.innerHTML = tool.htmlTemplate
             toolBox.appendChild(newDiv)
         })
-        document.body.appendChild(toolBox)
+
+        const container = document.createElement('div')
+        container.appendChild(toolBox)
+        container.id = 'usefulToolsContainer'
+        const icon = document.createElement('div')
+        icon.innerHTML = '🔨'
+        icon.style.cssText = `
+        cursor:pointer;
+        font-size:14px;
+        font-weight:600;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        text-align:center;
+        transform:scale(1.5);
+        `
+        icon.addEventListener('click', () => {
+            container.classList.toggle('show-full')
+        })
+
+        container.appendChild(icon)
+        container.appendChild(toolBox)
+        document.body.appendChild(container)
+
+
+
         tools.forEach(tool => tool.afterMount())
+
+
     }
 
 
@@ -62,19 +88,28 @@
     function insertStyle() {
         const styleEl = document.createElement('style')
         styleEl.innerHTML = `  
-        #usefulToolBox {
-            height: auto;
+        #usefulToolsContainer {
+            display: flex;
+            align-items: center; 
+            position: fixed;
+            bottom: 10px;
+            right: -270px;
+            z-index:99999999;
+            background-color: #fff;
+            color:#000;
+            width:300px;
             border: 1px solid #1772f6;
-            padding: 8px;
             border-radius: 8px;
+            padding:0 8px;
+        }
+
+        #usefulToolBox {
+            flex:11;
+            height: auto;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background-color: #fff;
-            z-index:99999999;
         }
 
         #UT_showPWD {
@@ -83,6 +118,14 @@
             background-color: #1772f6;
             color: white;
             border-radius: 4px;
+            border:1px solid #1772f6;
+            outline:none;
+            cursor:pointer;
+        }
+
+        .show-full {
+            right: 10px !important;
+            /* 完全展示在页面底部 */
         }
         `
         document.head.appendChild(styleEl)

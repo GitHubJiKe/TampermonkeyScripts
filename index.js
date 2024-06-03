@@ -13,49 +13,81 @@
     'use strict';
     function renderTools(tools) {
         const toolBox = document.createElement('div')
-        toolBox.style.cssText = `
-        width:200px;
-        height:auto;
-        border:1px solid red;
-        padding:8px;
-        border-radius:8px;
-        display:grid;
-        grid-template-columns:repeat(3,1fr);
-        gap:4px;
-        position:absolute;
-        bottom:10px;
-        right:10px;
-        `
+        toolBox.id = 'usefulToolBox';
         tools.forEach(tool => {
-            const btn = document.createElement('button')
-            btn.innerText = tool.text
-            toolBox.appendChild(btn)
+            const newDiv = document.createElement('div')
+            newDiv.innerHTML = tool.htmlTemplate
+            toolBox.appendChild(newDiv)
         })
-
-        toolBox.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON') {
-                // 执行按钮的点击事件处理逻辑
-                console.log('Button clicked:', e.target.textContent);
-                // 可以在这里添加更多的逻辑
-            }
-        })
-
         document.body.appendChild(toolBox)
+        tools.forEach(tool => tool.afterMount())
     }
 
-    function showPWD() {
-        document.querySelectorAll('input[type=password]').forEach(el => {
-            el.setAttribute('type', 'input')
-        })
-    }
+
 
     const tools = [
         {
-            text: '密码展示',
-            func: showPWD
+            htmlTemplate: `<button id="UT_showPWD">密码展示</button>`,
+            afterMount: () => {
+                document.querySelector('#UT_showPWD').addEventListener('click', () => {
+                    console.log('showPWD');
+                    document.querySelectorAll('input[type=password]').forEach(el => {
+                        el.setAttribute('type', 'input')
+                    })
+                })
+            }
+        },
+        {
+            htmlTemplate: `倍速播放:<input id="UT_highSpeedPlay" type="range" min="1" max="16" value="1" /><span id="videoSpeed">1</span>`,
+            afterMount: () => {
+                const rangeInput = document.querySelector('#UT_highSpeedPlay');
+                const videoSpeed = document.querySelector('#videoSpeed');
+                rangeInput.addEventListener('input', function (event) {
+                    const videoEl = document.querySelector('video')
+                    if (!videoEl) {
+                        return;
+                    }
+                    if (videoEl && videoEl.paused) {
+                        alert('请先播放视频')
+                        return;
+                    }
+                    const value = event.target.value;
+                    videoSpeed.textContent = value
+                    videoEl.playbackRate = value
+                });
+            }
         }
     ]
 
+    function insertStyle() {
+        const styleEl = document.createElement('style')
+        styleEl.innerHTML = `  
+        #usefulToolBox {
+            height: auto;
+            border: 1px solid #1772f6;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #fff;
+            z-index:99999999;
+        }
 
+        #UT_showPWD {
+            width: 100%;
+            text-align: center;
+            background-color: #1772f6;
+            color: white;
+            border-radius: 4px;
+        }
+        `
+        document.head.appendChild(styleEl)
+    }
+
+    insertStyle()
     renderTools(tools)
 })();

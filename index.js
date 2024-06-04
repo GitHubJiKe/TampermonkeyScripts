@@ -53,7 +53,7 @@
 
     const tools = [
         {
-            htmlTemplate: `<button id="UT_showPWD">密码展示</button>`,
+            htmlTemplate: `<button id="UT_showPWD" class="UT_Btn">密码展示</button>`,
             afterMount: () => {
                 document.querySelector('#UT_showPWD').addEventListener('click', () => {
                     console.log('showPWD');
@@ -82,7 +82,19 @@
                     videoEl.playbackRate = value
                 });
             }
-        }
+        },
+        {
+            htmlTemplate: `<button id="UT_downloadAllImages" class="UT_Btn">下载全部图片</button>`,
+            afterMount: () => {
+                const btn = document.querySelector('#UT_downloadAllImages')
+                btn.addEventListener('click', () => {
+                    const imagEls = document.querySelectorAll('img')
+                    imagEls.forEach((img, idx) => {
+                        downloadImage(img.src, img.alt || `img_${idx}`)
+                    })
+                })
+            }
+        },
     ]
 
     function insertStyle() {
@@ -112,7 +124,7 @@
             gap: 8px;
         }
 
-        #UT_showPWD {
+        .UT_Btn {
             width: 100%;
             text-align: center;
             background-color: #1772f6;
@@ -127,10 +139,33 @@
             right: 10px !important;
             /* 完全展示在页面底部 */
         }
+        .force-dark-mode {
+            color:#fff !important;
+            background-color:#000 !important;
+        }
         `
         document.head.appendChild(styleEl)
     }
 
     insertStyle()
     renderTools(tools)
+
+    function downloadImage(imageSrc, fileName) {
+        // 创建一个临时的<a>标签
+        const downloadLink = document.createElement('a');
+        const url = URL.createObjectURL(new Blob([imageSrc], { type: 'image/png' }));
+        downloadLink.href = url; // 设置图片源地址
+        downloadLink.download = fileName || 'image.jpg'; // 设置下载后的文件名
+
+        // 需要将<a>标签添加到文档中才能触发点击事件
+        document.body.appendChild(downloadLink);
+
+        // 触发点击事件，开始下载图片
+        downloadLink.click();
+
+        // 清理，移除添加的<a>标签
+        document.body.removeChild(downloadLink);
+    }
+
+
 })();

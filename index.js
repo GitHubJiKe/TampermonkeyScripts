@@ -21,6 +21,7 @@
         })
 
         const container = document.createElement('div')
+        container.classList.add('show-full')
         container.appendChild(toolBox)
         container.id = 'usefulToolsContainer'
         const icon = document.createElement('div')
@@ -84,17 +85,17 @@
             }
         },
         {
-            htmlTemplate: `<button id="UT_downloadAllImages" class="UT_Btn">下载全部图片</button>`,
+            htmlTemplate: `<button id="UT_backToTop" class="UT_Btn">回到顶部</button>`,
             afterMount: () => {
-                const btn = document.querySelector('#UT_downloadAllImages')
-                btn.addEventListener('click', () => {
-                    const imagEls = document.querySelectorAll('img')
-                    imagEls.forEach((img, idx) => {
-                        downloadImage(img.src, img.alt || `img_${idx}`)
+                const toTop = document.querySelector('#UT_backToTop')
+                toTop.addEventListener('click', () => {
+                    window.scrollTo({
+                        behavior: 'smooth',
+                        top: 0
                     })
                 })
             }
-        },
+        }
     ]
 
     function insertStyle() {
